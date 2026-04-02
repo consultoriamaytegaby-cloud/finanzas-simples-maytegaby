@@ -4,13 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Finanzas Simples - Método COTA por Mayte Gaby</title>
-<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
 <style>
 body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#f5f1ed,#faf7f2); }
 .hidden { display: none; }
 .input-field { border:2px solid #e8dcc8; border-radius:8px; padding:12px; width:100%; }
 .btn-primary { background:#8b7355; color:white; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:600; }
 .btn-primary:hover { background:#6b5344; }
+.content-step { margin-bottom:2rem; border-left:4px solid #8b7355; padding-left:1rem; }
 </style>
 </head>
 <body>
@@ -49,16 +51,37 @@ body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#f
 </section>
 
 <!-- CONTENIDO PRINCIPAL -->
-<section id="mainContent" class="hidden">
-  <!-- Aquí va TODO el contenido del taller de Finanzas Simples que ya tenías -->
+<section id="mainContent" class="hidden max-w-3xl mx-auto p-6">
+
   <h1 class="text-3xl font-bold mb-4">📊 Finanzas Simples - Método COTA</h1>
-  <p>Bienvenido, <span id="displayName"></span>! Comencemos tu plan financiero.</p>
-  <!-- Aquí irían tus pasos 1 a 4 que ya tenías -->
+  <p>Bienvenido, <span id="displayName"></span>! Comencemos tu plan financiero paso a paso.</p>
+
+  <div class="content-step">
+    <h2 class="text-xl font-semibold mb-2">Paso 1: Conocer tu situación financiera</h2>
+    <p>Revisa tus ingresos, gastos, deudas y ahorros. Haz un registro real y detallado de cada movimiento.</p>
+  </div>
+
+  <div class="content-step">
+    <h2 class="text-xl font-semibold mb-2">Paso 2: Establecer metas financieras</h2>
+    <p>Define qué quieres lograr: ahorro para emergencias, inversión, reducción de deudas, etc. Sé específico y realista.</p>
+  </div>
+
+  <div class="content-step">
+    <h2 class="text-xl font-semibold mb-2">Paso 3: Elegir tu método de presupuesto</h2>
+    <p>Según lo que elegiste: <strong><span id="displayMethod"></span></strong>, organiza tu presupuesto y haz seguimiento semanal o mensual.</p>
+  </div>
+
+  <div class="content-step">
+    <h2 class="text-xl font-semibold mb-2">Paso 4: Revisar y ajustar</h2>
+    <p>Al final de cada mes revisa tu progreso, ajusta tus gastos y sigue aprendiendo a optimizar tus finanzas.</p>
+  </div>
+
 </section>
 
 <script>
-// FUNCION PARA VALIDAR DATOS Y EMPEZAR EL TALLER
-function startApp() {
+(function(){emailjs.init("TU_USER_ID");})(); // <- pon tu User ID de EmailJS
+
+function startApp(){
   const name = document.getElementById('userName').value.trim();
   const phone = document.getElementById('userPhone').value.trim();
   const email = document.getElementById('userEmail').value.trim();
@@ -69,36 +92,39 @@ function startApp() {
     return;
   }
 
-  // MOSTRAR NOMBRE EN CONTENIDO
   document.getElementById('displayName').textContent = name;
-
-  // CAMBIAR DE PÁGINA
+  document.getElementById('displayMethod').textContent = method;
   document.getElementById('capturePage').classList.add('hidden');
   document.getElementById('mainContent').classList.remove('hidden');
 
-  // ENVIAR DATOS POR EMAIL
-  sendEmail({name, phone, email, method});
+  // Enviar datos mediante EmailJS
+  const templateParams = {
+    user_name: name,
+    user_phone: phone,
+    user_email: email,
+    budget_method: method
+  };
+
+  // Enviar a tu correo
+  emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', templateParams)
+    .then(function(response){
+      console.log('Correo enviado a tu correo!', response.status, response.text);
+    }, function(error){
+      console.error('Error enviando correo:', error);
+    });
+
+  // Enviar al usuario (puede ser otro template)
+  emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID_USER', templateParams)
+    .then(function(response){
+      console.log('Correo enviado al usuario!', response.status, response.text);
+    }, function(error){
+      console.error('Error enviando correo al usuario:', error);
+    });
 }
+</script>
 
-// FUNCION PARA ENVIAR DATOS (usa Formspree o similar)
-function sendEmail(data){
-  const toYourEmail = "tuemail@correo.com"; // <- cambia por tu correo
-  const toUserEmail = data.email;
-
-  const subject = "Nuevo usuario Finanzas Simples";
-  const body = `
-Nombre: ${data.name}
-Teléfono: ${data.phone}
-Correo: ${data.email}
-Método de presupuesto: ${data.method}
-`;
-
-  // ENVIAR A TU CORREO
-  window.open(`mailto:${toYourEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
-
-  // ENVIAR AL USUARIO
-  window.open(`mailto:${toUserEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
-}
+</body>
+</html>
 </script>
 
 </body>
