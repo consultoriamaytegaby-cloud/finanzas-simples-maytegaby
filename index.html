@@ -1,82 +1,108 @@
-<!-- Pantalla de Inicio -->
-<section id="introSection" class="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#f5f1ed] to-[#faf7f2] px-6">
-  <div class="card max-w-md w-full p-8 shadow-lg rounded-xl">
-    <h2 class="text-2xl font-bold text-[#2c2416] mb-4 text-center">Bienvenido a Finanzas Simples</h2>
-    <p class="text-sm text-[#666] mb-6 text-center">Antes de comenzar, necesitamos algunos datos para personalizar tu experiencia.</p>
-    
-    <div class="space-y-4">
-      <input type="text" id="userName" class="input-field w-full" placeholder="Nombre completo">
-      <input type="email" id="userEmail" class="input-field w-full" placeholder="Correo electrónico">
-      <input type="tel" id="userPhone" class="input-field w-full" placeholder="Teléfono (opcional)">
-      
-      <label for="budgetMethod" class="block text-[#2c2416] font-medium">Selecciona tu método de presupuesto preferido:</label>
-      <select id="budgetMethod" class="input-field w-full">
-        <option value="">-- Elige un método --</option>
-        <option value="50/30/20">50/30/20</option>
-        <option value="sobre">Por sobres / efectivo</option>
-        <option value="personalizado">Personalizado</option>
-      </select>
-    </div>
-    
-    <button class="btn-primary w-full mt-6" onclick="startPlan()">Comenzar →</button>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Finanzas Simples - Método COTA por Mayte Gaby</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<style>
+body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg,#f5f1ed,#faf7f2); }
+.hidden { display: none; }
+.input-field { border:2px solid #e8dcc8; border-radius:8px; padding:12px; width:100%; }
+.btn-primary { background:#8b7355; color:white; padding:12px 24px; border-radius:8px; cursor:pointer; font-weight:600; }
+.btn-primary:hover { background:#6b5344; }
+</style>
+</head>
+<body>
+
+<!-- PAGINA DE CAPTURA DE DATOS -->
+<section id="capturePage" class="max-w-xl mx-auto p-6">
+  <h2 class="text-2xl font-bold mb-4">👋 Bienvenido a Finanzas Simples</h2>
+  <p class="mb-4">Antes de iniciar, necesitamos algunos datos para personalizar tu experiencia y enviarte tu plan.</p>
+
+  <div class="mb-4">
+    <label for="userName" class="block mb-1 font-semibold">Nombre completo:</label>
+    <input type="text" id="userName" class="input-field" placeholder="Tu nombre">
   </div>
+  
+  <div class="mb-4">
+    <label for="userPhone" class="block mb-1 font-semibold">Teléfono:</label>
+    <input type="text" id="userPhone" class="input-field" placeholder="Ej: 33XXXXXXXX">
+  </div>
+
+  <div class="mb-4">
+    <label for="userEmail" class="block mb-1 font-semibold">Correo electrónico:</label>
+    <input type="email" id="userEmail" class="input-field" placeholder="ejemplo@correo.com">
+  </div>
+
+  <div class="mb-6">
+    <label for="budgetMethod" class="block mb-1 font-semibold">¿Cómo prefieres manejar tu presupuesto?</label>
+    <select id="budgetMethod" class="input-field">
+      <option value="">-- Elige tu método --</option>
+      <option value="A mano">A mano</option>
+      <option value="Excel">En Excel</option>
+      <option value="App de finanzas">En una app de finanzas</option>
+    </select>
+  </div>
+
+  <button class="btn-primary" onclick="startApp()">Iniciar →</button>
 </section>
-<!-- Script para validar, guardar y enviar correo -->
-<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+<!-- CONTENIDO PRINCIPAL -->
+<section id="mainContent" class="hidden">
+  <!-- Aquí va TODO el contenido del taller de Finanzas Simples que ya tenías -->
+  <h1 class="text-3xl font-bold mb-4">📊 Finanzas Simples - Método COTA</h1>
+  <p>Bienvenido, <span id="displayName"></span>! Comencemos tu plan financiero.</p>
+  <!-- Aquí irían tus pasos 1 a 4 que ya tenías -->
+</section>
+
 <script>
-  (function(){
-    emailjs.init("TU_PUBLIC_KEY"); // Reemplaza con tu public key
-  })();
+// FUNCION PARA VALIDAR DATOS Y EMPEZAR EL TALLER
+function startApp() {
+  const name = document.getElementById('userName').value.trim();
+  const phone = document.getElementById('userPhone').value.trim();
+  const email = document.getElementById('userEmail').value.trim();
+  const method = document.getElementById('budgetMethod').value;
 
-function startPlan() {
-    const name = document.getElementById('userName').value.trim();
-    const email = document.getElementById('userEmail').value.trim();
-    const phone = document.getElementById('userPhone').value.trim();
-    const method = document.getElementById('budgetMethod').value;
+  if(!name || !phone || !email || !method){
+    alert("Por favor completa todos los campos antes de continuar.");
+    return;
+  }
 
-    if (!name || !email || !method) {
-        alert('Por favor completa todos los campos antes de continuar.');
-        return;
-    }
+  // MOSTRAR NOMBRE EN CONTENIDO
+  document.getElementById('displayName').textContent = name;
 
-    // Guardar en localStorage
-    localStorage.setItem('userName', name);
-    localStorage.setItem('userEmail', email);
-    localStorage.setItem('userPhone', phone);
-    localStorage.setItem('budgetMethod', method);
+  // CAMBIAR DE PÁGINA
+  document.getElementById('capturePage').classList.add('hidden');
+  document.getElementById('mainContent').classList.remove('hidden');
 
-    // Preparar datos del email
-    const templateParams = {
-        user_name: name,
-        user_email: email,
-        user_phone: phone,
-        budget_method: method,
-        responses: "Aquí van las respuestas del método (puedes actualizar luego)" // luego se reemplaza con respuestas reales
-    };
-
-    // Enviar a tu correo
-    emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', templateParams)
-      .then(function(response) {
-         console.log('Correo enviado a mi correo!', response.status, response.text);
-      }, function(error) {
-         console.error('Error al enviar correo:', error);
-      });
-
-    // Enviar copia al usuario
-    emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', {...templateParams, user_email: email})
-      .then(function(response) {
-         console.log('Correo enviado al usuario!', response.status, response.text);
-      }, function(error) {
-         console.error('Error al enviar correo al usuario:', error);
-      });
-
-    // Mostrar contenido principal
-    document.getElementById('introSection').classList.add('hidden');
-    document.getElementById('mainHeader').classList.remove('hidden');
-    document.getElementById('mainContent').classList.remove('hidden');
-
-    if (typeof initStepIndicator === "function") initStepIndicator();
+  // ENVIAR DATOS POR EMAIL
+  sendEmail({name, phone, email, method});
 }
+
+// FUNCION PARA ENVIAR DATOS (usa Formspree o similar)
+function sendEmail(data){
+  const toYourEmail = "tuemail@correo.com"; // <- cambia por tu correo
+  const toUserEmail = data.email;
+
+  const subject = "Nuevo usuario Finanzas Simples";
+  const body = `
+Nombre: ${data.name}
+Teléfono: ${data.phone}
+Correo: ${data.email}
+Método de presupuesto: ${data.method}
+`;
+
+  // ENVIAR A TU CORREO
+  window.open(`mailto:${toYourEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+
+  // ENVIAR AL USUARIO
+  window.open(`mailto:${toUserEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`);
+}
+</script>
+
+</body>
+</html>
 </script>
 </section>
 </div>
