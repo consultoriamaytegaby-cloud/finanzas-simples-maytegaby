@@ -1,29 +1,18 @@
-<!-- Captura de Datos del Usuario -->
-<div class="card">
-  <h3 class="font-semibold text-[#2c2416] mb-4">👤 Tus Datos</h3>
-  <div class="space-y-4">
-    <div>
-      <label class="block text-sm font-semibold text-[#2c2416] mb-2">Nombre completo</label>
-      <input type="text" id="userName" class="input-field w-full" placeholder="Ej: Juan Pérez">
+<!-- Pantalla de Inicio / Datos -->
+<section id="introSection" class="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#f5f1ed] to-[#faf7f2] px-6">
+  <div class="card max-w-md w-full p-8 shadow-lg rounded-xl">
+    <h2 class="text-2xl font-bold text-[#2c2416] mb-4 text-center" style="font-family: 'Lora', serif;">Bienvenido a Finanzas Simples</h2>
+    <p class="text-sm text-[#666] mb-6 text-center">Antes de comenzar, necesitamos algunos datos para personalizar tu experiencia.</p>
+    
+    <div class="space-y-4">
+      <input type="text" id="userName" class="input-field w-full" placeholder="Nombre completo">
+      <input type="email" id="userEmail" class="input-field w-full" placeholder="Correo electrónico">
+      <input type="tel" id="userPhone" class="input-field w-full" placeholder="Teléfono (opcional)">
     </div>
-    <div>
-      <label class="block text-sm font-semibold text-[#2c2416] mb-2">Teléfono</label>
-      <input type="tel" id="userPhone" class="input-field w-full" placeholder="Ej: 3331234567">
-    </div>
-    <div>
-      <label class="block text-sm font-semibold text-[#2c2416] mb-2">Correo electrónico</label>
-      <input type="email" id="userEmail" class="input-field w-full" placeholder="Ej: correo@ejemplo.com">
-    </div>
-    <div>
-      <label class="block text-sm font-semibold text-[#2c2416] mb-2">Método de presupuesto</label>
-      <select id="budgetMethod" class="input-field w-full">
-        <option value="">Selecciona tu método</option>
-        <option value="mano">A mano</option>
-        <option value="excel">Excel</option>
-        <option value="app">App del teléfono</option>
-      </select>
-    </div>
+    
+    <button class="btn-primary w-full mt-6" onclick="startPlan()">Comenzar →</button>
   </div>
+</section>
 </div>
 <!doctype html>
 <html lang="es">
