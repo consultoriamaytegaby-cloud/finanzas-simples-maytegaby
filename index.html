@@ -1,17 +1,83 @@
-<!-- Pantalla de Inicio / Datos -->
+<!-- Pantalla de Inicio -->
 <section id="introSection" class="h-full w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#f5f1ed] to-[#faf7f2] px-6">
   <div class="card max-w-md w-full p-8 shadow-lg rounded-xl">
-    <h2 class="text-2xl font-bold text-[#2c2416] mb-4 text-center" style="font-family: 'Lora', serif;">Bienvenido a Finanzas Simples</h2>
+    <h2 class="text-2xl font-bold text-[#2c2416] mb-4 text-center">Bienvenido a Finanzas Simples</h2>
     <p class="text-sm text-[#666] mb-6 text-center">Antes de comenzar, necesitamos algunos datos para personalizar tu experiencia.</p>
     
     <div class="space-y-4">
       <input type="text" id="userName" class="input-field w-full" placeholder="Nombre completo">
       <input type="email" id="userEmail" class="input-field w-full" placeholder="Correo electrónico">
       <input type="tel" id="userPhone" class="input-field w-full" placeholder="Teléfono (opcional)">
+      
+      <label for="budgetMethod" class="block text-[#2c2416] font-medium">Selecciona tu método de presupuesto preferido:</label>
+      <select id="budgetMethod" class="input-field w-full">
+        <option value="">-- Elige un método --</option>
+        <option value="50/30/20">50/30/20</option>
+        <option value="sobre">Por sobres / efectivo</option>
+        <option value="personalizado">Personalizado</option>
+      </select>
     </div>
     
     <button class="btn-primary w-full mt-6" onclick="startPlan()">Comenzar →</button>
   </div>
+</section>
+<!-- Script para validar, guardar y enviar correo -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+<script>
+  (function(){
+    emailjs.init("TU_PUBLIC_KEY"); // Reemplaza con tu public key
+  })();
+
+function startPlan() {
+    const name = document.getElementById('userName').value.trim();
+    const email = document.getElementById('userEmail').value.trim();
+    const phone = document.getElementById('userPhone').value.trim();
+    const method = document.getElementById('budgetMethod').value;
+
+    if (!name || !email || !method) {
+        alert('Por favor completa todos los campos antes de continuar.');
+        return;
+    }
+
+    // Guardar en localStorage
+    localStorage.setItem('userName', name);
+    localStorage.setItem('userEmail', email);
+    localStorage.setItem('userPhone', phone);
+    localStorage.setItem('budgetMethod', method);
+
+    // Preparar datos del email
+    const templateParams = {
+        user_name: name,
+        user_email: email,
+        user_phone: phone,
+        budget_method: method,
+        responses: "Aquí van las respuestas del método (puedes actualizar luego)" // luego se reemplaza con respuestas reales
+    };
+
+    // Enviar a tu correo
+    emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', templateParams)
+      .then(function(response) {
+         console.log('Correo enviado a mi correo!', response.status, response.text);
+      }, function(error) {
+         console.error('Error al enviar correo:', error);
+      });
+
+    // Enviar copia al usuario
+    emailjs.send('TU_SERVICE_ID', 'TU_TEMPLATE_ID', {...templateParams, user_email: email})
+      .then(function(response) {
+         console.log('Correo enviado al usuario!', response.status, response.text);
+      }, function(error) {
+         console.error('Error al enviar correo al usuario:', error);
+      });
+
+    // Mostrar contenido principal
+    document.getElementById('introSection').classList.add('hidden');
+    document.getElementById('mainHeader').classList.remove('hidden');
+    document.getElementById('mainContent').classList.remove('hidden');
+
+    if (typeof initStepIndicator === "function") initStepIndicator();
+}
+</script>
 </section>
 </div>
 <!doctype html>
